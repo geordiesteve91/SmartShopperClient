@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+     <!-- Search, should appear as action button -->
+    <item android:id="@+id/action_checkout"
+          android:icon="@drawable/ic_checkout"
+          android:title="@string/action_shop"
+          android:showAsAction="ifRoom" />
+
+ 
+
+</menu>
+
