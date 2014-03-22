@@ -183,7 +183,14 @@ public class Shop extends Activity {
 		// Handle item selection
 		switch (item.getItemId()) {
 		case R.id.action_checkout:
-			checkout();
+			if(basket.size()>0){
+				checkout();
+			}
+			else
+			{
+				System.out.println("Basket is empty");
+				
+			}
 			return true;
 
 		default:
@@ -223,7 +230,7 @@ public class Shop extends Activity {
 
 			if (basket.size() == 0) {
 
-				System.out.println("BASKET BROKE");
+				System.out.println("basket is empty");
 			}
 			return basket;
 		}
@@ -312,13 +319,7 @@ public class Shop extends Activity {
 				techList);
 	}
 
-	/**
-	 * @param activity
-	 *            The corresponding {@link BaseActivity} requesting to stop the
-	 *            foreground dispatch.
-	 * @param adapter
-	 *            The {@link NfcAdapter} used for the foreground dispatch.
-	 */
+	
 	public static void stopForegroundDispatch(final Activity activity,
 			NfcAdapter adapter) {
 		adapter.disableForegroundDispatch(activity);
@@ -339,7 +340,7 @@ public class Shop extends Activity {
 			}
 		} else if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)) {
 
-			// In case we would still use the Tech Discovered Intent
+			// In case we would still use the Type of NFC Tech Discovered Intent
 			Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
 			String[] techList = tag.getTechList();
 			String searchedTech = Ndef.class.getName();

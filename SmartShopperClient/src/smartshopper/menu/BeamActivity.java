@@ -44,6 +44,8 @@ public class BeamActivity extends Activity implements
 	String passedList;
 	ArrayList<String> checkout;
 	int numItems;
+	TextView message;
+
 	
 
 	@Override
@@ -52,6 +54,7 @@ public class BeamActivity extends Activity implements
 		setContentView(R.layout.push);
 		passedList = (StoreBasket.readString(this, StoreBasket.BASKET_PASS,
 				null));
+		message = (TextView) findViewById(R.id.textView1);
 		System.out.println("PassedList is " + passedList);
 		ArrayList<String> checkout= new ArrayList<String>();
 		Collections.addAll(checkout, passedList.split("\\s*,\\s*"));
@@ -115,8 +118,11 @@ public class BeamActivity extends Activity implements
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case MESSAGE_SENT:
-				Toast.makeText(getApplicationContext(), "Message sent!",
+				Toast.makeText(getApplicationContext(), "Basket sent!",
 						Toast.LENGTH_LONG).show();
+				emptyBasket();
+//				Intent wait = new Intent(BeamActivity.this, Finished.class);
+//				startActivity(wait);
 				break;
 			}
 		}

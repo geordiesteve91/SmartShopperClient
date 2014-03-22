@@ -16,13 +16,14 @@
         android:text=""
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <Button
-        android:id="@+id/empty"
+    <TextView
+        android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/HelloTag"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="39dp"
-        android:text="Empty" />
+        android:layout_below="@+id/HelloTag"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="52dp"
+        android:text="Scan Terminal to checkout"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>
