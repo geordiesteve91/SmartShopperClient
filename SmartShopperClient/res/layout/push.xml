@@ -23,7 +23,6 @@
         android:layout_below="@+id/HelloTag"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="52dp"
-        android:text="Scan Terminal to checkout"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>

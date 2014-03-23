@@ -1,19 +1,8 @@
 package smartshopper.menu;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 
 import smartshopper.library.DatabaseHandler;
 import smartshopper.library.EmptyBasket;
@@ -27,7 +16,6 @@ import android.nfc.NfcAdapter;
 import android.nfc.NfcAdapter.CreateNdefMessageCallback;
 import android.nfc.NfcAdapter.OnNdefPushCompleteCallback;
 import android.nfc.NfcEvent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -55,6 +43,7 @@ public class BeamActivity extends Activity implements
 		passedList = (StoreBasket.readString(this, StoreBasket.BASKET_PASS,
 				null));
 		message = (TextView) findViewById(R.id.textView1);
+		message.setText("Scan Terminal to checkout");
 		System.out.println("PassedList is " + passedList);
 		ArrayList<String> checkout= new ArrayList<String>();
 		Collections.addAll(checkout, passedList.split("\\s*,\\s*"));
@@ -121,8 +110,7 @@ public class BeamActivity extends Activity implements
 				Toast.makeText(getApplicationContext(), "Basket sent!",
 						Toast.LENGTH_LONG).show();
 				emptyBasket();
-//				Intent wait = new Intent(BeamActivity.this, Finished.class);
-//				startActivity(wait);
+
 				break;
 			}
 		}
@@ -163,6 +151,7 @@ public class BeamActivity extends Activity implements
 	 * Parses the NDEF Message from the intent and toast to the user
 	 */
 	void processIntent(Intent intent) {
+		message.setText("");
 		Parcelable[] rawMsgs = intent
 				.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
 		// in this context, only one message was sent over beam
@@ -170,9 +159,39 @@ public class BeamActivity extends Activity implements
 		// record 0 contains the MIME type, record 1 is the AAR, if present
 		String payload = new String(msg.getRecords()[0].getPayload());
 		recieved.setText(payload);
+		
+		System.out.println("Payload"+payload);
 		Toast.makeText(getApplicationContext(),
 				"Message received over beam: " + payload, Toast.LENGTH_LONG)
 				.show();
+		if(payload!= null){
+			Thread timer = new Thread() {
+				public void run() {
+					try {
+						sleep(5000);
+					
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					} finally {
+						System.out.println("Time up");
+						try {
+							sleep(6000);
+							emptyBasket();
+							Intent main = new Intent(BeamActivity.this,Main.class);
+							startActivity(main);
+								
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					
+
+					}
+				}
+			};
+			timer.start();
+			
+		}
 	}
 	
 }
