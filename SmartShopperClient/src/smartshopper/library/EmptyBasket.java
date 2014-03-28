@@ -37,7 +37,7 @@ private Context context;
 		// Create a new HttpClient and Post Header
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpPost httppost = new HttpPost(
-				"http://homepages.cs.ncl.ac.uk/s.c.g.campbell/smartshopper/map/emptyBasket.php");
+				"http://homepages.cs.ncl.ac.uk/s.c.g.campbell/smartshopper/map/emptybasket.php");
 	
 		try {
 			

@@ -1,5 +1,7 @@
 package smartshopper.menu;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,6 +22,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
+import android.util.Base64;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,21 +36,30 @@ public class BeamActivity extends Activity implements
 	ArrayList<String> checkout;
 	int numItems;
 	TextView message;
-
-	
+	String signature = "SmartShopperSignature";
+	String test;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.push);
+
+		try {
+			test = SHA256(signature);
+			System.out.println(test);
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		passedList = (StoreBasket.readString(this, StoreBasket.BASKET_PASS,
 				null));
 		message = (TextView) findViewById(R.id.textView1);
 		message.setText("Scan Terminal to checkout");
 		System.out.println("PassedList is " + passedList);
-		ArrayList<String> checkout= new ArrayList<String>();
+		ArrayList<String> checkout = new ArrayList<String>();
 		Collections.addAll(checkout, passedList.split("\\s*,\\s*"));
-		System.out.println("Checkout"+checkout);
+		System.out.println("Checkout" + checkout);
 		System.out.println("Passed Length " + checkout.size());
 		numItems = checkout.size();
 
@@ -66,10 +78,10 @@ public class BeamActivity extends Activity implements
 		}
 
 	}
-	public ArrayList<String> getCheckout()
-	{
+
+	public ArrayList<String> getCheckout() {
 		return checkout;
-		
+
 	}
 
 	private static final String MIME_TYPE = "application/terminal.smartshopper";
@@ -80,23 +92,30 @@ public class BeamActivity extends Activity implements
 	 */
 	@Override
 	public NdefMessage createNdefMessage(NfcEvent event) {
-		System.out.println("Does it work");
-		
-		
-		System.out.println("Items # in basket is "+numItems);
-		
+		System.out.println("Test is" + test);
+
 		DatabaseHandler db = new DatabaseHandler(getApplicationContext());
 		@SuppressWarnings("rawtypes")
 		HashMap user = new HashMap();
 		user = db.getUserDetails();
 		String uid = user.get("email").toString();
-		String text = uid +","+numItems+","+passedList;
-		System.out.println("Text is"+text);
+		String text = uid + "," + numItems + "," + passedList + "///" + test;
+		System.out.println("Text is" + text);
 		// recieved.setText(uid);
 		NdefMessage msg = new NdefMessage(new NdefRecord[] {
 				NfcUtils.createRecord(MIME_TYPE, text.getBytes()),
 				NdefRecord.createApplicationRecord(PACKAGE_NAME) });
 		return msg;
+	}
+
+	public static String SHA256(String text) throws NoSuchAlgorithmException {
+
+		MessageDigest md = MessageDigest.getInstance("SHA-256");
+
+		md.update(text.getBytes());
+		byte[] digest = md.digest();
+
+		return Base64.encodeToString(digest, Base64.DEFAULT);
 	}
 
 	private static final int MESSAGE_SENT = 1;
@@ -109,17 +128,17 @@ public class BeamActivity extends Activity implements
 			case MESSAGE_SENT:
 				Toast.makeText(getApplicationContext(), "Basket sent!",
 						Toast.LENGTH_LONG).show();
-				emptyBasket();
+				// emptyBasket();
 
 				break;
 			}
 		}
 	};
-	public void emptyBasket()
-	{
+
+	public void emptyBasket() {
 		String toEmpty = "true";
 		new EmptyBasket(this).execute(toEmpty);
-		
+
 	}
 
 	/**
@@ -147,6 +166,12 @@ public class BeamActivity extends Activity implements
 		}
 	}
 
+	@Override
+	public void onBackPressed() {
+		Intent go = new Intent(BeamActivity.this,Shop.class);
+		startActivity(go);
+	}
+
 	/**
 	 * Parses the NDEF Message from the intent and toast to the user
 	 */
@@ -154,44 +179,47 @@ public class BeamActivity extends Activity implements
 		message.setText("");
 		Parcelable[] rawMsgs = intent
 				.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-		// in this context, only one message was sent over beam
+
 		NdefMessage msg = (NdefMessage) rawMsgs[0];
 		// record 0 contains the MIME type, record 1 is the AAR, if present
 		String payload = new String(msg.getRecords()[0].getPayload());
 		recieved.setText(payload);
-		
-		System.out.println("Payload"+payload);
+
+		System.out.println("Payload" + payload);
 		Toast.makeText(getApplicationContext(),
 				"Message received over beam: " + payload, Toast.LENGTH_LONG)
 				.show();
-		if(payload!= null){
+		if (payload != null) {
 			Thread timer = new Thread() {
 				public void run() {
 					try {
 						sleep(5000);
-					
+
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					} finally {
 						System.out.println("Time up");
 						try {
-							sleep(6000);
-							emptyBasket();
-							Intent main = new Intent(BeamActivity.this,Main.class);
-							startActivity(main);
-								
+							if (recieved.getText() != null) {
+
+								sleep(8000);
+								emptyBasket();
+								Intent main = new Intent(BeamActivity.this,
+										Main.class);
+								startActivity(main);
+							}
+
 						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
+
 							e.printStackTrace();
 						}
-					
 
 					}
 				}
 			};
 			timer.start();
-			
+
 		}
 	}
-	
+
 }
