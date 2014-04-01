@@ -25,7 +25,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 public class Register extends Activity {
 
 	/**
@@ -292,6 +291,7 @@ public class Register extends Activity {
 			}
 		}
 	}
+
 	@Override
 	public void onBackPressed() {
 	}

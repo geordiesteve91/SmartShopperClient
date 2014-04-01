@@ -20,7 +20,7 @@ public class OffersFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		getActivity().setRequestedOrientation(
-	            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+				ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		View rootView = inflater.inflate(R.layout.offers, container, false);
 		if (myUrl == null) {
 			myUrl = mapPage;

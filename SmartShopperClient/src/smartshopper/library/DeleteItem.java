@@ -17,9 +17,9 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 public class DeleteItem extends AsyncTask<String, Integer, Double> {
-private Context context;
-	
-	public DeleteItem(Context context){
+	private Context context;
+
+	public DeleteItem(Context context) {
 		this.context = context;
 	}
 
@@ -31,23 +31,23 @@ private Context context;
 	}
 
 	public void postData(String valueIWantToSend) {
-		System.out.println("Value recieved is "+valueIWantToSend);
+		System.out.println("Value recieved is " + valueIWantToSend);
 		// Create a new HttpClient and Post Header
+		// Post to the php script that delete's items from the database.
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpPost httppost = new HttpPost(
 				"http://homepages.cs.ncl.ac.uk/s.c.g.campbell/smartshopper/map/deleteItem.php");
-	
+
 		try {
-			
 
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 
-			
 			nameValuePairs.add(new BasicNameValuePair("toDelete",
 					valueIWantToSend));
 			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
-			 //Execute HTTP Post Request and get response from the server
+			// Execute HTTP Post Request and get response from the server when
+			// item is deleted from the table
 			HttpResponse response = httpclient.execute(httppost);
 
 		} catch (ClientProtocolException e) {

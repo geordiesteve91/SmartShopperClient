@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-
 public class Settings extends Activity {
 	Button btnLogout;
 	Button changepas;
@@ -24,11 +23,6 @@ public class Settings extends Activity {
 		changepas = (Button) findViewById(R.id.btchangepass);
 		btnLogout = (Button) findViewById(R.id.logout);
 
-		
-		
-		
-		
-		
 		/**
 		 * Change Password Activity Started
 		 **/
@@ -61,8 +55,4 @@ public class Settings extends Activity {
 
 	}
 
-	
-	
-
-	
 }

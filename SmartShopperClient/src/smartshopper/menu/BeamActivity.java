@@ -38,6 +38,7 @@ public class BeamActivity extends Activity implements
 	TextView message;
 	String signature = "SmartShopperSignature";
 	String test;
+	String terminalsig = "w4vxqqkpeEAKY+IdhRE44q9ZI+d8RBhWOZPMI38Xx84=";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -46,7 +47,7 @@ public class BeamActivity extends Activity implements
 
 		try {
 			test = SHA256(signature);
-			System.out.println(test);
+			// /System.out.println(test);
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -138,6 +139,12 @@ public class BeamActivity extends Activity implements
 	public void emptyBasket() {
 		String toEmpty = "true";
 		new EmptyBasket(this).execute(toEmpty);
+		// Refer to string that baskets load from
+		//
+		String empty = "";
+		StoreBasket.writeString(this, StoreBasket.BASKET, empty);
+		String check = (StoreBasket.readString(this, StoreBasket.BASKET, null));
+		System.out.println("Check is" + check);
 
 	}
 
@@ -168,13 +175,10 @@ public class BeamActivity extends Activity implements
 
 	@Override
 	public void onBackPressed() {
-		Intent go = new Intent(BeamActivity.this,Shop.class);
+		Intent go = new Intent(BeamActivity.this, Shop.class);
 		startActivity(go);
 	}
 
-	/**
-	 * Parses the NDEF Message from the intent and toast to the user
-	 */
 	void processIntent(Intent intent) {
 		message.setText("");
 		Parcelable[] rawMsgs = intent
@@ -183,13 +187,12 @@ public class BeamActivity extends Activity implements
 		NdefMessage msg = (NdefMessage) rawMsgs[0];
 		// record 0 contains the MIME type, record 1 is the AAR, if present
 		String payload = new String(msg.getRecords()[0].getPayload());
-		recieved.setText(payload);
+		
 
 		System.out.println("Payload" + payload);
-		Toast.makeText(getApplicationContext(),
-				"Message received over beam: " + payload, Toast.LENGTH_LONG)
-				.show();
-		if (payload != null) {
+		if (payload.contains(terminalsig)) {
+			System.out.println("Valid signature");
+			recieved.setText("Checkout Successful");
 			Thread timer = new Thread() {
 				public void run() {
 					try {
@@ -219,6 +222,10 @@ public class BeamActivity extends Activity implements
 			};
 			timer.start();
 
+		}
+		else
+		{
+			//Display error
 		}
 	}
 

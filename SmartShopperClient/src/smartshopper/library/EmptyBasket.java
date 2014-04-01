@@ -1,7 +1,5 @@
 package smartshopper.library;
 
-
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +17,9 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 public class EmptyBasket extends AsyncTask<String, Integer, Double> {
-private Context context;
-	
-	public EmptyBasket(Context context){
+	private Context context;
+
+	public EmptyBasket(Context context) {
 		this.context = context;
 	}
 
@@ -33,23 +31,22 @@ private Context context;
 	}
 
 	public void postData(String valueIWantToSend) {
-		System.out.println("Value recieved is "+valueIWantToSend);
+		System.out.println("Value recieved is " + valueIWantToSend);
 		// Create a new HttpClient and Post Header
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpPost httppost = new HttpPost(
 				"http://homepages.cs.ncl.ac.uk/s.c.g.campbell/smartshopper/map/emptybasket.php");
-	
+
 		try {
-			
 
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 
-			
-			nameValuePairs.add(new BasicNameValuePair("empty",
-					valueIWantToSend));
+			// Inform script of the desire to empty the basket.
+			nameValuePairs
+					.add(new BasicNameValuePair("empty", valueIWantToSend));
 			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
-			 //Execute HTTP Post Request and get response from the server
+			// Execute HTTP Post Request and get response from the server
 			HttpResponse response = httpclient.execute(httppost);
 
 		} catch (ClientProtocolException e) {

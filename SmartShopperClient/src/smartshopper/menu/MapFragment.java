@@ -13,19 +13,17 @@ import android.webkit.WebViewClient;
 @SuppressLint("SetJavaScriptEnabled")
 public class MapFragment extends Fragment {
 
-	
-
 	private WebView myWebView;
 	final static String mapPage = "http://homepages.cs.ncl.ac.uk/s.c.g.campbell/smartshopper/map/map.php";
-	
-	//Shared preference for store map.
+
+	// Shared preference for store map.
 	String myUrl;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		getActivity().setRequestedOrientation(
-                ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+				ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 
 		View rootView = inflater.inflate(R.layout.map, container, false);
 		if (myUrl == null) {

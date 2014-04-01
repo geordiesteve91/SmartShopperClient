@@ -6,109 +6,82 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
-
-
-
 import android.content.Context;
-
 
 public class UserFunctions {
 
-    private JSONParser jsonParser;
+	private JSONParser jsonParser;
 
-    //URL of the PHP API
-    private static String loginURL = "http://homepages.cs.ncl.ac.uk/s.c.g.campbell/smartshopper/login/";
-    private static String registerURL = "http://homepages.cs.ncl.ac.uk/s.c.g.campbell/smartshopper/login/";
-    private static String forpassURL = "http://homepages.cs.ncl.ac.uk/s.c.g.campbell/smartshopper/login/";
-    private static String chgpassURL = "http://homepages.cs.ncl.ac.uk/s.c.g.campbell/smartshopper/login/";
+	// URL of the PHP API
+	private static String loginURL = "http://homepages.cs.ncl.ac.uk/s.c.g.campbell/smartshopper/login/";
+	private static String registerURL = "http://homepages.cs.ncl.ac.uk/s.c.g.campbell/smartshopper/login/";
+	private static String forpassURL = "http://homepages.cs.ncl.ac.uk/s.c.g.campbell/smartshopper/login/";
+	private static String chgpassURL = "http://homepages.cs.ncl.ac.uk/s.c.g.campbell/smartshopper/login/";
 
+	private static String login_tag = "login";
+	private static String register_tag = "register";
+	private static String forpass_tag = "forpass";
+	private static String chgpass_tag = "chgpass";
 
-    private static String login_tag = "login";
-    private static String register_tag = "register";
-    private static String forpass_tag = "forpass";
-    private static String chgpass_tag = "chgpass";
+	// constructor
+	public UserFunctions() {
+		jsonParser = new JSONParser();
+	}
 
+	//Login method
 
-    // constructor
-    public UserFunctions(){
-        jsonParser = new JSONParser();
-    }
+	public JSONObject loginUser(String email, String password) {
+		// Building Parameters
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("tag", login_tag));
+		params.add(new BasicNameValuePair("email", email));
+		params.add(new BasicNameValuePair("password", password));
+		JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
+		return json;
+	}
 
-    /**
-     * Function to Login
-     **/
+	//Method called to change the users password.
 
-    public JSONObject loginUser(String email, String password){
-        // Building Parameters
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("tag", login_tag));
-        params.add(new BasicNameValuePair("email", email));
-        params.add(new BasicNameValuePair("password", password));
-        JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
-        return json;
-    }
+	public JSONObject chgPass(String newpas, String email) {
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("tag", chgpass_tag));
 
-    /**
-     * Function to change password
-     **/
+		params.add(new BasicNameValuePair("newpas", newpas));
+		params.add(new BasicNameValuePair("email", email));
+		JSONObject json = jsonParser.getJSONFromUrl(chgpassURL, params);
+		return json;
+	}
 
-    public JSONObject chgPass(String newpas, String email){
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("tag", chgpass_tag));
+	//Password reset method
 
-        params.add(new BasicNameValuePair("newpas", newpas));
-        params.add(new BasicNameValuePair("email", email));
-        JSONObject json = jsonParser.getJSONFromUrl(chgpassURL, params);
-        return json;
-    }
+	public JSONObject forPass(String forgotpassword) {
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("tag", forpass_tag));
+		params.add(new BasicNameValuePair("forgotpassword", forgotpassword));
+		JSONObject json = jsonParser.getJSONFromUrl(forpassURL, params);
+		return json;
+	}
 
+	//Register the user using this method
+	public JSONObject registerUser(String fname, String lname, String email,
+			String uname, String password) {
+		// Building Parameters
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("tag", register_tag));
+		params.add(new BasicNameValuePair("fname", fname));
+		params.add(new BasicNameValuePair("lname", lname));
+		params.add(new BasicNameValuePair("email", email));
+		params.add(new BasicNameValuePair("uname", uname));
+		params.add(new BasicNameValuePair("password", password));
+		JSONObject json = jsonParser.getJSONFromUrl(registerURL, params);
+		return json;
+	}
 
-
-
-
-    /**
-     * Function to reset the password
-     **/
-
-    public JSONObject forPass(String forgotpassword){
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("tag", forpass_tag));
-        params.add(new BasicNameValuePair("forgotpassword", forgotpassword));
-        JSONObject json = jsonParser.getJSONFromUrl(forpassURL, params);
-        return json;
-    }
-
-
-
-
-
-
-     /**
-      * Function to  Register
-      **/
-    public JSONObject registerUser(String fname, String lname, String email, String uname, String password){
-        // Building Parameters
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("tag", register_tag));
-        params.add(new BasicNameValuePair("fname", fname));
-        params.add(new BasicNameValuePair("lname", lname));
-        params.add(new BasicNameValuePair("email", email));
-        params.add(new BasicNameValuePair("uname", uname));
-        params.add(new BasicNameValuePair("password", password));
-        JSONObject json = jsonParser.getJSONFromUrl(registerURL,params);
-        return json;
-    }
-
-
-    /**
-     * Function to logout user
-     * Resets the temporary data stored in SQLite Database
-     * */
-    public boolean logoutUser(Context context){
-        DatabaseHandler db = new DatabaseHandler(context);
-        db.resetTables();
-        return true;
-    }
+	//Resets the data in the SQLite database to log the user out by the reset of the local storage.
+	public boolean logoutUser(Context context) {
+		DatabaseHandler db = new DatabaseHandler(context);
+		db.resetTables();
+		return true;
+	}
 
 }
-

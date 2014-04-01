@@ -1,7 +1,5 @@
 package smartshopper.library;
 
-
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -12,17 +10,16 @@ public class StoreBasket {
 
 	public static final int MODE = Context.MODE_PRIVATE;
 
-	
-
 	public static final String BASKET = "BASKET";
-	public static final String BASKET_PASS="PASSED_BASKET";
-
+	public static final String BASKET_PASS = "PASSED_BASKET";
 	
+	//Methods to send and retrieve data from the shared preferences local storage on the device.
 
 	public static void writeString(Context context, String key, String value) {
 		getEditor(context).putString(key, value).commit();
 
 	}
+
 	public static void writeEmpty(Context context, String key, String value) {
 		getEditor(context).putString(key, value).commit();
 

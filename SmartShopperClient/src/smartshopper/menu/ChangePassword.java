@@ -26,7 +26,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-
 public class ChangePassword extends Activity {
 
 	private static String KEY_SUCCESS = "success";
@@ -83,7 +82,7 @@ public class ChangePassword extends Activity {
 			nDialog.setCancelable(true);
 			nDialog.show();
 		}
-
+		//Check network connection with the reliable google which is more than likely online.
 		@Override
 		protected Boolean doInBackground(String... args) {
 			ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -117,7 +116,7 @@ public class ChangePassword extends Activity {
 				new ProcessRegister().execute();
 			} else {
 				nDialog.dismiss();
-				alert.setText("Error in Network Connection");
+				alert.setText("Error connecting to the Internet");
 			}
 		}
 	}
@@ -140,8 +139,8 @@ public class ChangePassword extends Activity {
 			email = user.get("email");
 
 			pDialog = new ProgressDialog(ChangePassword.this);
-			pDialog.setTitle("Contacting Servers");
-			pDialog.setMessage("Getting Data ...");
+			pDialog.setTitle("Contacting Server");
+			pDialog.setMessage("Retrieving Data ...");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(true);
 			pDialog.show();
@@ -171,14 +170,14 @@ public class ChangePassword extends Activity {
 						 * Dismiss the process dialog
 						 **/
 						pDialog.dismiss();
-						alert.setText("Your Password is successfully changed.");
+						alert.setText("Your Password has been successfully changed.");
 
 					} else if (Integer.parseInt(red) == 2) {
 						pDialog.dismiss();
-						alert.setText("Invalid old Password.");
+						alert.setText("Invalid old Password.Try again");
 					} else {
 						pDialog.dismiss();
-						alert.setText("Error occured in changing Password.");
+						alert.setText("An Error occured in changing the Password.");
 					}
 
 				}

@@ -68,9 +68,8 @@ public class Main extends Activity {
 		@SuppressWarnings("rawtypes")
 		HashMap user = new HashMap();
 		user = db.getUserDetails();
-				
+
 		if (user.isEmpty()) {
-			
 
 			UserFunctions logout = new UserFunctions();
 			logout.logoutUser(getApplicationContext());
@@ -82,7 +81,6 @@ public class Main extends Activity {
 			new MyAsyncTask().execute(user.get("email").toString());
 
 		}
-
 
 		mTitle = mDrawerTitle = getTitle();
 
@@ -108,7 +106,6 @@ public class Main extends Activity {
 		// Offers
 		navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons
 				.getResourceId(2, -1)));
-		
 
 		// Recycle the typed array
 		navMenuIcons.recycle();
@@ -151,7 +148,6 @@ public class Main extends Activity {
 		}
 	}
 
-
 	/**
 	 * Slide menu item click listener
 	 * */
@@ -164,14 +160,12 @@ public class Main extends Activity {
 			displayView(position);
 		}
 	}
-	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-	
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -185,8 +179,8 @@ public class Main extends Activity {
 			LoadSettings();
 			return true;
 		case R.id.action_shop:
-            LoadShop();
-            return true;
+			LoadShop();
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -196,7 +190,7 @@ public class Main extends Activity {
 		Intent set = new Intent(Main.this, Settings.class);
 		startActivity(set);
 	}
-	
+
 	private void LoadShop() {
 		Intent set = new Intent(Main.this, Shop.class);
 		startActivity(set);
@@ -231,7 +225,6 @@ public class Main extends Activity {
 		case 2:
 			fragment = new OffersFragment();
 			break;
-		
 
 		default:
 			break;
@@ -300,9 +293,9 @@ public class Main extends Activity {
 				List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 				nameValuePairs.add(new BasicNameValuePair("uid",
 						valueIWantToSend));
-				//Post Current Aisle
-//				nameValuePairs.add(new BasicNameValuePair("c_aisle",
-//						valueIWantToSend));
+				// Post Current Aisle
+				// nameValuePairs.add(new BasicNameValuePair("c_aisle",
+				// valueIWantToSend));
 				httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
 				// Execute HTTP Post Request and get response from the server

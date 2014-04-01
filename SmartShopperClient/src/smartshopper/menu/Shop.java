@@ -17,7 +17,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 import smartshopper.library.DeleteItem;
-import smartshopper.library.EmptyBasket;
+
 import smartshopper.library.StoreBasket;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -57,7 +57,7 @@ public class Shop extends Activity {
 
 	private ListView basketList;
 	ArrayList<String> basket = new ArrayList<String>();
-	ArrayList<String> deletedFromBasket = new ArrayList<String>();
+
 	ArrayAdapter<String> arrayAdapter;
 	public String BASKET_ITEMS;
 	SharedPreferences sharedPrefs;
@@ -67,6 +67,8 @@ public class Shop extends Activity {
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		// Used to test if the activity is not resuming to isolate error cause.
+		System.out.println("Creating not resuming");
 
 		setContentView(R.layout.shop);
 		add = (Button) findViewById(R.id.button1);
@@ -75,12 +77,12 @@ public class Shop extends Activity {
 		mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
 		loadBasket();
 
-		
 		// Prevents list bug of [] being displayed as the first entry
 		if (basket.lastIndexOf("") == 0) {
 
 			basket.remove(0);
 		}
+
 		System.out.println("Basket" + basket);
 
 		// SCANS IN TAGS
@@ -94,8 +96,13 @@ public class Shop extends Activity {
 				this, android.R.layout.simple_list_item_1, basket);
 
 		basketList.setAdapter(arrayAdapter);
-		arrayAdapter.notifyDataSetChanged();
 
+		arrayAdapter.notifyDataSetChanged();
+		if (basket.size() == 0) {
+			basketList.setVisibility(View.INVISIBLE);
+
+		}
+		System.out.println("Basket is empty");
 		add.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View arg0) {
 				if (data.getText() == "") {
@@ -106,6 +113,12 @@ public class Shop extends Activity {
 
 					arrayAdapter.add(data.getText().toString());
 					System.out.println(basket);
+					basketList.setVisibility(View.VISIBLE);
+					if (basket.lastIndexOf("") == 0) {
+						System.out.println("I'm doing this");
+						basket.remove(0);
+					}
+
 					new MyAsyncTask().execute(data.getText().toString());
 					System.out.println("Item Added!");
 					// Convert list to string
@@ -126,6 +139,10 @@ public class Shop extends Activity {
 				final int index = basket.indexOf(selectedFromList);
 
 				System.out.println(index);
+				if (toChange.length() == 0) {
+
+					basket.remove(index);
+				}
 				// ADD DIALOG and if yes remove and call delete query
 				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 						Shop.this);
@@ -136,13 +153,9 @@ public class Shop extends Activity {
 				alertDialogBuilder.setPositiveButton("Yes",
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
-								String lastDeleted=basket.get(index);
-							    deletedFromBasket.add(lastDeleted);
-								
-							    lastDeleted=basket.get(index);
-							    deletedFromBasket.add(lastDeleted);
-							    basket.remove(index);
-							    System.out.println("Deleted  "+deletedFromBasket);
+
+								basket.remove(index);
+
 								String joined = TextUtils.join(", ", basket);
 								System.out.println("Joined list  " + joined);
 								saveList(joined);
@@ -192,17 +205,18 @@ public class Shop extends Activity {
 		// Handle item selection
 		switch (item.getItemId()) {
 		case R.id.action_checkout:
-			if(basket.size()>0){
+			if (basket.size() > 0) {
 				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 						Shop.this);
 				alertDialogBuilder.setTitle("Checkout");
-				alertDialogBuilder.setMessage("Do you want to checkout with this basket?");
+				alertDialogBuilder
+						.setMessage("Do you want to checkout with this basket?");
 				// set positive button: Yes message
 				alertDialogBuilder.setPositiveButton("Yes",
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 								checkout();
-								
+
 							}
 						});
 				// set negative button: No message
@@ -213,7 +227,7 @@ public class Shop extends Activity {
 								// user
 
 								dialog.cancel();
-								
+
 							}
 						});
 
@@ -221,10 +235,7 @@ public class Shop extends Activity {
 				// show alert
 				alertDialog.show();
 
-			
-			}
-			else
-			{
+			} else {
 				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 						Shop.this);
 				System.out.println("Basket is empty");
@@ -234,16 +245,14 @@ public class Shop extends Activity {
 				alertDialogBuilder.setPositiveButton("OK",
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
-								
+
 							}
 						});
-				
 
 				AlertDialog alertDialog = alertDialogBuilder.create();
 				// show alert
 				alertDialog.show();
 
-				
 			}
 			return true;
 
@@ -253,7 +262,7 @@ public class Shop extends Activity {
 	}
 
 	private void checkout() {
-		
+
 		finish();
 		passBasket();
 		Intent go = new Intent(Shop.this, BeamActivity.class);
@@ -272,6 +281,7 @@ public class Shop extends Activity {
 	public ArrayList<String> loadBasket() {
 
 		toChange = (StoreBasket.readString(this, StoreBasket.BASKET, null));
+
 		if (toChange == null) {
 			System.out.println("EMPTY");
 			return null;
@@ -294,10 +304,10 @@ public class Shop extends Activity {
 	}
 
 	public void passBasket() {
-		
+
 		String pass = (StoreBasket.readString(this, StoreBasket.BASKET, null));
 		StoreBasket.writeString(this, StoreBasket.BASKET_PASS, pass);
-		//basket.clear();
+		// basket.clear();
 		String toList = basket.toString();
 
 		StoreBasket.writeString(this, StoreBasket.BASKET, toList);
@@ -317,19 +327,17 @@ public class Shop extends Activity {
 			basket.remove(0);
 		}
 		System.out.println(basket);
-		String toFix=basket.toString();
+		String toFix = basket.toString();
 		toFix = toFix.replace("[", "");
-		toFix =  toFix.replace("]", "");
-		System.out.println("Invalid values gone "+toFix);
+		toFix = toFix.replace("]", "");
+		System.out.println("Invalid values gone " + toFix);
 		basket.clear();
-		
+
 		basket.addAll(Arrays.asList(toFix.split("\\s*,\\s*")));
-		
+
 		saveList(toFix);
-		System.out.println("Basket is"+basket);
+		System.out.println("Basket is" + basket);
 		setupForegroundDispatch(this, mNfcAdapter);
-		
-		
 
 	}
 
@@ -392,7 +400,6 @@ public class Shop extends Activity {
 				techList);
 	}
 
-	
 	public static void stopForegroundDispatch(final Activity activity,
 			NfcAdapter adapter) {
 		adapter.disableForegroundDispatch(activity);
